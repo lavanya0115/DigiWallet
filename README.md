@@ -10,3 +10,9 @@ Guide for install and run the project
     -   Run the `php artisan key:generate` command.
 -   [x] Migrate the database
     -   Run the following command for migrate the database `php artisan migrate`.
+-   [x] Run The Application 
+    -   Run the following command  `php artisan serve`.
+####
+API Documentation:
+-   [x] You can find the documentation in the link : https://tara.gitbook.io/digiwallet/
+
