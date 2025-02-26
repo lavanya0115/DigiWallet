@@ -192,6 +192,10 @@ class WalletController extends Controller
                 ], 400);
             }
 
+            if ($this->isSuspiciousTransaction($senderWallet->id, $request->amount)) {
+                return response()->json(['error' => 'Suspicious transaction detected! Contact support.'], 403);
+            }
+
             if ($senderWallet->balance < $request->amount) {
                 return response()->json([
                     'status' => 'error',
@@ -230,5 +234,26 @@ class WalletController extends Controller
                 'error'   => $e->getMessage(),
             ], 500);
         }
+    }
+    public function isSuspiciousTransaction($userId, $amount)
+    {
+
+        $highValueThreshold = 10000;
+        $transactionCountLimit = 3;
+        $timeFrameMinutes = 10;
+
+        if ($amount >= $highValueThreshold) {
+            return true;
+        }
+
+        $recentTransactions = Transaction::where('user_id', $userId)
+            ->where('created_at', '>=', Carbon::now()->subMinutes($timeFrameMinutes))
+            ->count();
+
+        if ($recentTransactions >= $transactionCountLimit) {
+            return true;
+        }
+
+        return false;
     }
 }
